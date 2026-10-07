@@ -1,13 +1,79 @@
 def GetTextFileName():
+    """
+    Gets a valid Windows 11 text filename from the user.
+
+    Global variables used:
+        None.
+
+    Parameters:
+        None.
+
+    Returns:
+        A valid filename ending in .txt.
+
+    NOTE:
+        This function was developed with assistance from ChatGPT.
+    """
+
+    invalid_characters = '<>:"/\\|?*'
+
+    reserved_names = {
+        "CON", "PRN", "AUX", "NUL",
+        "COM1", "COM2", "COM3", "COM4", "COM5",
+        "COM6", "COM7", "COM8", "COM9",
+        "LPT1", "LPT2", "LPT3", "LPT4", "LPT5",
+        "LPT6", "LPT7", "LPT8", "LPT9"
+    }
+
     while True:
-        filename = input("Enter a .txt filename: ").strip()
+        filename = input(
+            "Enter the name of the text file, including .txt: "
+        )
 
         if filename == "":
             print("Error: filename cannot be empty.")
-        elif not filename.lower().endswith(".txt"):
+            continue
+
+        if filename.strip() == "":
+            print("Error: filename cannot contain only spaces.")
+            continue
+
+        if filename != filename.strip():
+            print("Error: filename cannot begin or end with a space.")
+            continue
+
+        if not filename.lower().endswith(".txt"):
             print("Error: filename must end with .txt.")
-        else:
-            return filename
+            continue
+
+        invalid_found = False
+
+        for character in invalid_characters:
+            if character in filename:
+                print(
+                    "Error: filename contains the invalid character "
+                    + character
+                )
+                invalid_found = True
+                break
+
+        if invalid_found:
+            continue
+
+        base_name = filename.rsplit(".", 1)[0]
+
+        if base_name.upper() in reserved_names:
+            print(
+                "Error: " + base_name
+                + " is a reserved Windows filename."
+            )
+            continue
+
+        if len(filename) > 255:
+            print("Error: filename is too long.")
+            continue
+
+        return filename
 
 
 print("SG1 Program")
