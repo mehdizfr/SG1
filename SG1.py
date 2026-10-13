@@ -1,3 +1,4 @@
+
 """
 Programming Language:
     Python 3
@@ -10,7 +11,7 @@ Course:
     Fall 2026
 
 Group:
-    Group _____
+    Group 5
 
 Programmers:
     Mehdi Zafferi
@@ -24,6 +25,7 @@ Original Development Date:
 
 Major Revision Dates:
     October 7, 2026 - Improved filename validation and documentation.
+    October 13, 2026 - Improved binary file validation and error handling.
 
 Program Description:
     SG1 is an interactive Python 3 program that reads a text file
@@ -43,11 +45,18 @@ Program Description:
     background pixels belonging to detected patterns are changed
     to red while the black pixels remain black.
 
+    NOTE:
+    The current version implements filename input, binary text-file
+    validation, and displaying the contents of the file.
+
+    The image-processing and pattern-detection portions will be
+    integrated with the team's contributions.
+
 Central Data Structures:
     The program uses a list of strings named lines to store the rows
     read from the binary text file.
 
-    The program will also use a two-dimensional list named
+    The completed program will also use a two-dimensional list named
     ZerosAndOnes to represent pixels from IMAGE2.PNG. Black pixels
     are represented by 0 and other pixel values are represented by 1.
 
@@ -56,19 +65,20 @@ External Files:
         Contains rows of binary digits used to create IMAGE1.PNG.
 
     IMAGE1.PNG:
-        Generated from the binary text file.
+        Will be generated from the binary text file.
 
     IMAGE2.PNG:
         A 250 by 250 black-and-white input image used for pattern
         detection.
 
     IMAGE3.PNG:
-        Generated from IMAGE2.PNG after detected pattern backgrounds
-        are changed to red.
+        Will be generated from IMAGE2.PNG after detected pattern
+        backgrounds are changed to red.
 
 External Resources:
     ChatGPT:
-        Used for assistance with the GetTextFileName function.
+        Used for assistance with the GetTextFileName function,
+        binary file validation, and error handling.
 
     Any additional resources used during development should be added
     here before submission.
@@ -141,11 +151,19 @@ def GetTextFileName():
 
         base_name = filename.rsplit(".", 1)[0]
 
-        if base_name.upper() in reserved_names:
+        # Windows reserves certain names, even when they have
+        # file extensions.
+        reserved_base = base_name.split(".")[0].upper()
+
+        if reserved_base in reserved_names:
             print(
                 "Error: " + base_name
                 + " is a reserved Windows filename."
             )
+            continue
+
+        if base_name.endswith("."):
+            print("Error: filename cannot end with a period.")
             continue
 
         if len(filename) > 255:
@@ -155,63 +173,115 @@ def GetTextFileName():
         return filename
 
 
-# ------------------------------------------------------------
-# Program introduction
-# ------------------------------------------------------------
+def ReadBinaryTextFile(filename):
+    """
+    Purpose:
+        Opens and validates a text file containing binary digits.
 
-print("SG1 Program")
-print("This program reads a binary text file and works with images.")
+    Global Variables:
+        None.
 
+    Parameters:
+        filename - The name of the text file to open.
 
-# ------------------------------------------------------------
-# Get the name of the text file.
-# ------------------------------------------------------------
+    Returns:
+        A list of strings containing the valid binary rows.
 
-filename = GetTextFileName()
+        The program terminates if the file is missing or invalid.
+    """
 
+    try:
+        with open(filename, "r") as file:
+            data = file.read()
 
-# ------------------------------------------------------------
-# Open and validate the binary text file.
-# ------------------------------------------------------------
+    except FileNotFoundError:
+        print("Error: file not found.")
+        input("Press ENTER to end.")
+        raise SystemExit
 
-try:
-    file = open(filename, "r")
-    data = file.read()
-    file.close()
+    except (PermissionError, UnicodeError, OSError):
+        print("Error: unable to read the file.")
+        input("Press ENTER to end.")
+        raise SystemExit
 
     lines = data.splitlines()
 
-    # Make sure the file contains only binary characters.
+    # Check for invalid characters.
     for line in lines:
         if any(char not in "01" for char in line):
             print("Error: file must contain only 0s and 1s.")
             input("Press ENTER to end.")
             raise SystemExit
 
-    # The file must contain at least 10 lines.
+    # The text file must contain at least 10 lines.
     if len(lines) < 10:
         print("Error: file must have at least 10 lines.")
         input("Press ENTER to end.")
         raise SystemExit
 
+    # Every line must contain at least 20 characters.
+    for line in lines:
+        if len(line) < 20:
+            print("Error: each line must have at least 20 characters.")
+            input("Press ENTER to end.")
+            raise SystemExit
+
+    # All lines must have the same number of characters.
     length = len(lines[0])
 
-    # Each line must contain at least 20 characters.
-    if length < 20:
-        print("Error: each line must have at least 20 characters.")
-        input("Press ENTER to end.")
-        raise SystemExit
-
-    # All lines must contain the same number of characters.
     for line in lines:
         if len(line) != length:
             print("Error: all lines must have the same length.")
             input("Press ENTER to end.")
             raise SystemExit
 
-    # Display the contents of the valid text file.
-    print(data)
+    # Display the valid file contents.
+    for line in lines:
+        print(line)
 
-except FileNotFoundError:
-    print("Error: file not found.")
-    input("Press ENTER to end.")
+    return lines
+
+
+def main():
+    """
+    Purpose:
+        Runs the SG1 program.
+
+    Global Variables:
+        None.
+
+    Parameters:
+        None.
+
+    Returns:
+        None.
+    """
+
+    print("SG1 Program")
+    print("This program reads a binary text file and works with images.")
+
+    # Ask the user for the text filename.
+    filename = GetTextFileName()
+
+    # Open, validate, and display the binary text file.
+    lines = ReadBinaryTextFile(filename)
+
+    print("Binary text file validated successfully.")
+
+    # ------------------------------------------------------------
+    # TEAM INTEGRATION SECTION
+    # ------------------------------------------------------------
+    # Add the team's IMAGE1.PNG code here.
+    #
+    # Add the team's IMAGE2.PNG and ZerosAndOnes code here.
+    #
+    # Add the team's 11 by 11 pattern detection code here.
+    #
+    # Add the team's IMAGE3.PNG code here.
+    # ------------------------------------------------------------
+
+    print("Current SG1 input validation completed successfully.")
+
+
+if __name__ == "__main__":
+    main()
