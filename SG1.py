@@ -26,7 +26,7 @@ Original Development Date:
 Major Revision Dates:
     October 7, 2026 - Improved filename validation and documentation.
     October 13, 2026 - Improved binary file validation and error handling.
-
+    October 14,2026 - Added the image1.png logic to main
 Program Description:
     SG1 is an interactive Python 3 program that reads a text file
     containing rows of binary digits. The program validates the text
@@ -307,6 +307,40 @@ def FindPlusSigns(ZerosAndOnes):
     return centers
 
 
+from PIL import Image
+
+import math
+import os
+import sys 
+#Resources
+#https://stackoverflow.com/questions/8554282/creating-a-png-file-in-python        
+#https://stackoverflow.com/questions/45029829/how-to-properly-set-the-path-to-input-output-file
+def CreateImage(lines):
+#Image Dismensions
+    height = len(lines)
+    width = len(lines[0])
+
+    img = Image.new('L', (width, height))
+#Empty list of pixels"
+    pixels = []
+#Read every character in line ,from top to and bottom also left and right
+    for line in lines:
+        for char in line:
+            if char == '0':
+                pixels.append(0)
+            else:
+                pixels.append(255)
+
+    img.putdata(pixels)
+#Determines where to save the image#
+    output_path = os.path.join(os.getcwd(), "IMAGE1.PNG")
+
+
+    img.save(output_path)
+
+    print(f"Image saved to {output_path}")
+
+    img.show()
 
 
 
@@ -341,7 +375,9 @@ def main():
     # TEAM INTEGRATION SECTION
     # ------------------------------------------------------------
     # Add the team's IMAGE1.PNG code here.
-    # 
+    #
+    #Adds the Image1
+    CreateImage(lines)
     # Add the team's IMAGE2.PNG and ZerosAndOnes code here.
     ZerosAndOnes = ConvertImage2()
 
