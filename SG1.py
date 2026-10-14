@@ -341,17 +341,20 @@ def main():
     # TEAM INTEGRATION SECTION
     # ------------------------------------------------------------
     # Add the team's IMAGE1.PNG code here.
-    #
+    # 
     # Add the team's IMAGE2.PNG and ZerosAndOnes code here.
-    #    ZerosAndOnes = ConvertImage2()
+    ZerosAndOnes = ConvertImage2()
+
     # Add the team's 11 by 11 pattern detection code here.
-    #    if ZerosAndOnes is not None:
+    if ZerosAndOnes is not None:
         centers = FindPlusSigns(ZerosAndOnes)
 
         print("Number of plus signs:", len(centers))
 
         for center in centers:
             print("Center coordinates:", center)
+
+    # 
     # Add the team's IMAGE3.PNG code here.
     # ------------------------------------------------------------
 
