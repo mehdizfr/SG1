@@ -242,6 +242,75 @@ def ReadBinaryTextFile(filename):
     return lines
 
 
+from PIL import Image
+
+def ConvertImage2():
+    """
+    Converts IMAGE2.PNG into a list of zeros and ones.
+    """
+    image = Image.open("IMAGE2.PNG").convert("RGB")
+    image.show()
+    width, height = image.size
+
+    if width != 250 or height != 250:
+        print("Error: IMAGE2.PNG must be 250 by 250.")
+        return None
+
+    ZerosAndOnes = []
+
+    for y in range(height):
+        row = []
+
+        for x in range(width):
+            pixel = image.getpixel((x, y))
+
+            if pixel == (0, 0, 0):
+                row.append(0)
+            else:
+                row.append(1)
+
+        ZerosAndOnes.append(row)
+
+    return ZerosAndOnes
+
+
+def FindPlusSigns(ZerosAndOnes):
+    """
+    Finds the 11 by 11 plus-sign pattern.
+    Returns the center coordinates of each match.
+    """
+    centers = []
+    height = len(ZerosAndOnes)
+    width = len(ZerosAndOnes[0])
+
+    for y in range(height - 10):
+        for x in range(width - 10):
+            found = True
+
+            for row in range(11):
+                for col in range(11):
+                    if row == 5 or col == 5:
+                        expected = 0
+                    else:
+                        expected = 1
+
+                    if ZerosAndOnes[y + row][x + col] != expected:
+                        found = False
+                        break
+
+                if not found:
+                    break
+
+            if found:
+                centers.append((x + 5, y + 5))
+
+    return centers
+
+
+
+
+
+
 def main():
     """
     Purpose:
@@ -274,9 +343,15 @@ def main():
     # Add the team's IMAGE1.PNG code here.
     #
     # Add the team's IMAGE2.PNG and ZerosAndOnes code here.
-    #
+    #    ZerosAndOnes = ConvertImage2()
     # Add the team's 11 by 11 pattern detection code here.
-    #
+    #    if ZerosAndOnes is not None:
+        centers = FindPlusSigns(ZerosAndOnes)
+
+        print("Number of plus signs:", len(centers))
+
+        for center in centers:
+            print("Center coordinates:", center)
     # Add the team's IMAGE3.PNG code here.
     # ------------------------------------------------------------
 
