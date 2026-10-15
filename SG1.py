@@ -1,4 +1,3 @@
-
 """
 Programming Language:
     Python 3
@@ -343,6 +342,37 @@ def CreateImage(lines):
     img.show()
 
 
+def CreateImage3(image2_path, centers):
+    """
+    Purpose:
+        Creates IMAGE3.PNG from IMAGE2.PNG by highlighting the white 
+        background pixels of detected 11x11 plus-sign patterns in red.
+    
+    Parameters:
+        image2_path - Path to IMAGE2.PNG
+        centers - List of (x, y) center coordinates of detected plus signs
+    
+    Returns:
+        None
+    """
+    img = Image.open(image2_path).convert("RGB")
+    pixels = img.load()
+    width, height = img.size
+
+    for (cx, cy) in centers:
+        # The 11x11 plus-sign pattern extends 5 pixels out from the center in each direction
+        for y in range(cy - 5, cy + 6):
+            for x in range(cx - 5, cx + 6):
+                if 0 <= x < width and 0 <= y < height:
+                    current_pixel = pixels[x, y]
+                    # If it's a white background pixel, change it to red (255, 0, 0)
+                    if current_pixel == (255, 255, 255) or current_pixel == 255:
+                        pixels[x, y] = (255, 0, 0)
+
+    output_path = os.path.join(os.getcwd(), "IMAGE3.PNG")
+    img.save(output_path)
+    print(f"IMAGE3 saved to {output_path}")
+    img.show()
 
 
 def main():
@@ -390,8 +420,8 @@ def main():
         for center in centers:
             print("Center coordinates:", center)
 
-    # 
-    # Add the team's IMAGE3.PNG code here.
+        # Add your IMAGE3.PNG code execution here.
+        CreateImage3("IMAGE2.PNG", centers)
     # ------------------------------------------------------------
 
     print("Current SG1 input validation completed successfully.")
