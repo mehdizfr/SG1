@@ -306,6 +306,37 @@ def FindPlusSigns(ZerosAndOnes):
 
     return centers
 
+def CreateImage3(image2_path, centers):
+    """
+    Purpose:
+        Creates IMAGE3.PNG from IMAGE2.PNG by highlighting the white 
+        background pixels of detected 11x11 plus-sign patterns in red.
+    
+    Parameters:
+        image2_path - Path to IMAGE2.PNG
+        centers - List of (x, y) center coordinates of detected plus signs
+    
+    Returns:
+        None
+    """
+    img = Image.open(image2_path).convert("RGB")
+    pixels = img.load()
+    width, height = img.size
+
+    for (cx, cy) in centers:
+        # The 11x11 plus-sign pattern extends 5 pixels out from the center in each direction
+        for y in range(cy - 5, cy + 6):
+            for x in range(cx - 5, cx + 6):
+                if 0 <= x < width and 0 <= y < height:
+                    current_pixel = pixels[x, y]
+                    # If it's a white background pixel, change it to red (255, 0, 0)
+                    if current_pixel == (255, 255, 255) or current_pixel == 255:
+                        pixels[x, y] = (255, 0, 0)
+
+    output_path = os.path.join(os.getcwd(), "IMAGE3.PNG")
+    img.save(output_path)
+    print(f"IMAGE3 saved to {output_path}")
+    img.show()
 
 from PIL import Image
 
@@ -381,7 +412,6 @@ def main():
     # Add the team's IMAGE2.PNG and ZerosAndOnes code here.
     ZerosAndOnes = ConvertImage2()
 
-    # Add the team's 11 by 11 pattern detection code here.
     if ZerosAndOnes is not None:
         centers = FindPlusSigns(ZerosAndOnes)
 
@@ -390,12 +420,8 @@ def main():
         for center in centers:
             print("Center coordinates:", center)
 
-    # 
-    # Add the team's IMAGE3.PNG code here.
-    # ------------------------------------------------------------
-
-    print("Current SG1 input validation completed successfully.")
-
+        # Create IMAGE3 using the detected plus-sign centers.
+        CreateImage3("IMAGE2.PNG", centers)
 
 if __name__ == "__main__":
     main()
