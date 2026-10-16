@@ -361,7 +361,7 @@ def CreateImage(lines):
                 pixels.append(0)
             else:
                 pixels.append(255)
-
+#Add pixels
     img.putdata(pixels)
 #Determines where to save the image#
     output_path = os.path.join(os.getcwd(), "IMAGE1.PNG")
